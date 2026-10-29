@@ -1,0 +1,310 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дело № 07 — Последняя улика</title>
+<style>
+:root {
+  --bg: #10131c;
+  --panel: #1b2030;
+  --gold: #f4c76b;
+  --text: #f4f1e9;
+  --muted: #b5b8c7;
+  --red: #f17878;
+  --green: #8ce0b0;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at top, #30354c 0%, transparent 60%),
+    var(--bg);
+  font-family: Georgia, "Times New Roman", serif;
+}
+header {
+  padding: 30px 18px 18px;
+  text-align: center;
+  border-bottom: 1px solid #ffffff18;
+}
+.eyebrow {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font: 12px Arial, sans-serif;
+}
+h1 { font-size: clamp(28px, 6vw, 46px); margin: 14px 0 8px; }
+header p { color: var(--muted); margin: 0; }
+main { width: min(760px, 92%); margin: 25px auto 60px; }
+.progress-wrap { margin-bottom: 22px; }
+.progress-label {
+  display: flex; justify-content: space-between;
+  color: var(--muted); font: 12px Arial, sans-serif;
+  margin-bottom: 8px;
+}
+.progress { height: 5px; background: #ffffff18; border-radius: 10px; overflow: hidden; }
+#progressBar { height: 100%; width: 0; background: var(--gold); transition: width .3s; }
+.card {
+  background: #1b2030eF;
+  border: 1px solid #ffffff1b;
+  border-radius: 18px;
+  padding: clamp(20px, 5vw, 34px);
+  box-shadow: 0 18px 60px #0004;
+}
+.stage-tag {
+  color: var(--gold); font: 12px Arial, sans-serif;
+  letter-spacing: 2px; text-transform: uppercase;
+}
+h2 { font-size: 28px; margin: 12px 0; }
+p, li { line-height: 1.7; }
+.muted { color: var(--muted); }
+.clue {
+  background: #0e111a; border-left: 3px solid var(--gold);
+  border-radius: 8px; padding: 16px; margin: 18px 0;
+  line-height: 1.7; white-space: pre-line;
+}
+button, input {
+  font: 16px Arial, sans-serif; border-radius: 10px;
+}
+button {
+  padding: 13px 17px; border: 1px solid #ffffff24;
+  background: #2b3247; color: var(--text);
+  cursor: pointer; transition: .2s;
+}
+button:hover { border-color: var(--gold); transform: translateY(-1px); }
+button.primary { background: var(--gold); color: #211a0d; border-color: var(--gold); font-weight: bold; }
+.choices { display: grid; gap: 10px; margin: 20px 0; }
+.choices button { text-align: left; }
+input {
+  width: 100%; padding: 14px; color: var(--text);
+  background: #10131c; border: 1px solid #ffffff35;
+  margin: 8px 0 12px;
+}
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
+.feedback { min-height: 24px; margin-top: 12px; color: var(--gold); }
+footer { text-align: center; color: #888da0; padding: 0 20px 28px; font: 12px Arial, sans-serif; }
+.heart { color: #ff8a9a; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Закрытое дело · Архив № 07</div>
+  <h1>Последняя улика</h1>
+  <p>Детективная история, в которой главная героиня — Соня.</p>
+</header>
+
+<main>
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progressText">Материалы дела</span>
+      <span id="progressCount">0 / 6</span>
+    </div>
+    <div class="progress"><div id="progressBar"></div></div>
+  </div>
+  <section class="card" id="game"></section>
+</main>
+<footer>Подготовлено с <span class="heart">♥</span> специально для Сони</footer>
+
+<script>
+const stages = [
+{
+  tag: "Этап 01 · Место происшествия",
+  title: "Исчезновение подарка",
+  text: "Соня, у нас чрезвычайное происшествие. Подарок, приготовленный специально для тебя, исчез из запертой комнаты. На столе осталась записка, а на полу — следы. Только внимательный детектив сможет раскрыть это дело.",
+  clue: "ПРОТОКОЛ ОСМОТРА\n\n• Окно закрыто изнутри.\n• Дверь не повреждена.\n• На столе лежит записка: «Ищи там, где хранятся слова».\n• На часах время остановилось на 07:27.",
+  question: "Где логичнее всего искать следующую улику?",
+  choices: ["В книжном шкафу", "В морозилке", "Под ковриком снаружи"],
+  correct: 0,
+  success: "Верно! Книги хранят слова. Среди них обнаружен конверт с показаниями свидетелей."
+},
+{
+  tag: "Этап 02 · Допрос свидетелей",
+  title: "Три показания",
+  text: "У комнаты были три посетителя. Каждый оставил показания. Внимательно прочитай их и найди подозрительную деталь.",
+  clue: "АННА: «Я ушла до семи и даже не подходила к столу».\n\nМАКС: «В 19:10 я видел свет в комнате, но внутрь не заходил».\n\nЛЕО: «Я вообще не был в доме, потому что в это время шёл дождь. Моя куртка совершенно сухая».",
+  question: "Какое показание вызывает больше всего вопросов?",
+  choices: ["Анны", "Макса", "Лео"],
+  correct: 2,
+  success: "Хорошее наблюдение! Сухая куртка при заявленной прогулке под дождём — странная деталь. Но это ещё не доказательство."
+},
+{
+  tag: "Этап 03 · Зашифрованное послание",
+  title: "Шифр Цезаря",
+  text: "В конверте лежала ещё одна записка. Буквы сдвинули на три позиции вперёд по русскому алфавиту. Чтобы прочитать послание, сдвинь каждую букву на три позиции назад.",
+  clue: "КЛЮЧ: сдвиг −3\n\nТЕКСТ: КЗЙГ",
+  question: "Какое слово было зашифровано?",
+  input: true,
+  placeholder: "Введи слово",
+  accepted: ["ЗЕБР", "ЗЕБРЫ", "КОД", "КЛЮЧ"],
+  hint: "Попробуй слово «КЛЮЧ» — оно связано с тем, что ищет детектив.",
+  success: "Послание указывает на ключ! В кармане старого пальто действительно нашли маленький ключ с биркой «07»."
+},
+{
+  tag: "Этап 04 · Версия следствия",
+  title: "Кто виновен?",
+  text: "У нас есть три факта: Лео дал сомнительное показание, ключ был спрятан в пальто, а записка указывала на место хранения слов. Но помни: подозрение — ещё не доказательство.",
+  clue: "В материалах дела нет прямого доказательства против Анны, Макса или Лео. Зато известно, что вся история была устроена ради сюрприза для Сони.",
+  question: "Какую версию выбираешь?",
+  choices: ["Лео всё организовал", "Это была тщательно подготовленная загадка", "Доказательств пока недостаточно"],
+  correct: 1,
+  success: "Именно! Это не настоящее преступление, а загадка с сюрпризом. Кто-то хотел, чтобы Соня почувствовала себя героиней детективной истории."
+},
+{
+  tag: "Этап 05 · Сейф",
+  title: "Код последнего замка",
+  text: "Ключ открыл маленькую металлическую коробку. Внутри — замок с цифровым кодом и короткая записка.",
+  clue: "«Начни с номера дела. Добавь число, которое было на часах в самом начале».\n\nНомер дела: 07\nВремя на часах: 07:27",
+  question: "Введи код из четырёх цифр.",
+  input: true,
+  placeholder: "Например, 0727",
+  accepted: ["0727"],
+  hint: "Время на остановившихся часах — 07:27.",
+  success: "Щёлк! Сейф открылся. Внутри лежит последнее письмо — адресованное лично тебе."
+},
+{
+  tag: "Этап 06 · Финал",
+  title: "Дело раскрыто",
+  text: "Соня, ты прошла все испытания: заметила детали, проверила показания, разгадала шифр и открыла сейф. Осталась последняя улика — та, которую нельзя найти под лупой.",
+  clue: "САМОЕ ВАЖНОЕ СООБЩЕНИЕ\n\nТы — человек, ради которого захотелось придумать целую историю. Спасибо за твою улыбку, за твой характер и за все моменты, которые делают жизнь особенной.",
+  question: "Готова забрать свою награду?",
+  choices: ["Открыть финальное послание ♥"],
+  correct: 0,
+  ending: true
+}
+];
+
+let current = 0;
+let solved = new Set();
+let hintShown = false;
+
+const game = document.getElementById("game");
+
+function render() {
+  const s = stages[current];
+  document.getElementById("progressText").textContent = "Материалы дела";
+  document.getElementById("progressCount").textContent = solved.size + " / 6";
+  document.getElementById("progressBar").style.width = (solved.size / 6 * 100) + "%";
+
+  game.innerHTML = `
+    <div class="stage-tag">${s.tag}</div>
+    <h2>${s.title}</h2>
+    <p>${s.text}</p>
+    <div class="clue">${s.clue}</div>
+    <p><strong>${s.question}</strong></p>
+    <div id="answerArea"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="actions" id="actions"></div>
+  `;
+
+  const answerArea = document.getElementById("answerArea");
+  const actions = document.getElementById("actions");
+
+  if (s.input) {
+    answerArea.innerHTML = `<input id="answerInput" placeholder="${s.placeholder}" autocomplete="off">`;
+    const check = document.createElement("button");
+    check.className = "primary";
+    check.textContent = "Проверить";
+    check.onclick = checkInput;
+    actions.appendChild(check);
+    const hint = document.createElement("button");
+    hint.textContent = "Подсказка";
+    hint.onclick = showHint;
+    actions.appendChild(hint);
+    document.getElementById("answerInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") checkInput();
+    });
+  } else {
+    const choices = document.createElement("div");
+    choices.className = "choices";
+    s.choices.forEach((choice, i) => {
+      const button = document.createElement("button");
+      button.textContent = choice;
+      button.onclick = () => choose(i);
+      choices.appendChild(button);
+    });
+    answerArea.appendChild(choices);
+  }
+}
+
+function choose(index) {
+  const s = stages[current];
+  const feedback = document.getElementById("feedback");
+  if (index !== s.correct) {
+    feedback.textContent = "Не совсем. Осмотри улики ещё раз и попробуй снова.";
+    feedback.style.color = "var(--red)";
+    return;
+  }
+  solved.add(current);
+  if (s.ending) {
+    showEnding();
+    return;
+  }
+  feedback.textContent = s.success;
+  feedback.style.color = "var(--green)";
+  nextButton();
+}
+
+function checkInput() {
+  const s = stages[current];
+  const value = document.getElementById("answerInput").value.trim().toUpperCase().replace(/\s/g, "");
+  const feedback = document.getElementById("feedback");
+  if (s.accepted.includes(value)) {
+    solved.add(current);
+    feedback.textContent = s.success;
+    feedback.style.color = "var(--green)";
+    nextButton();
+  } else {
+    feedback.textContent = "Код не подошёл. Проверь записку и попробуй ещё раз.";
+    feedback.style.color = "var(--red)";
+  }
+}
+
+function showHint() {
+  const s = stages[current];
+  document.getElementById("feedback").textContent = s.hint;
+}
+
+function nextButton() {
+  const actions = document.getElementById("actions");
+  if (document.getElementById("nextBtn")) return;
+  const next = document.createElement("button");
+  next.id = "nextBtn";
+  next.className = "primary";
+  next.textContent = current === stages.length - 1 ? "Завершить дело" : "Следующая улика →";
+  next.onclick = () => {
+    if (current === stages.length - 1) showEnding();
+    else { current++; render(); }
+  };
+  actions.appendChild(next);
+}
+
+function showEnding() {
+  solved.add(current);
+  document.getElementById("progressCount").textContent = "6 / 6";
+  document.getElementById("progressBar").style.width = "100%";
+  game.innerHTML = `
+    <div class="stage-tag">Дело закрыто · Архив № 07</div>
+    <h2>Для тебя, Соня ♥</h2>
+    <p>Ты раскрыла дело! Но главный секрет всё это время был не в уликах.</p>
+    <div class="clue">Ты делаешь этот мир чуточку лучше просто тем, что ты в нём есть.\n\nПусть впереди будет ещё много счастливых моментов, маленьких приключений и поводов улыбаться.\n\nЭто дело закрыто. Но наша история продолжается… ♥</div>
+    <p class="muted">Награда за прохождение: одно большое объятие и сюрприз от автора этого квеста.</p>
+    <div class="actions">
+      <button class="primary" onclick="restart()">Пройти ещё раз ↻</button>
+    </div>
+  `;
+}
+
+function restart() {
+  current = 0;
+  solved = new Set();
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
